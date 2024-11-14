@@ -9,4 +9,4 @@ Planned basic componenets:
 - Custom component based front end library (I do not want to code bare html, but also dont want to use a library)
 
 # Why?
-I haven't written anything in javascript for a while, need to re-familiarise myself
+I haven't written anything in javascript for a while, need to re-familiarise myself. When completed, this project could prove useful.
