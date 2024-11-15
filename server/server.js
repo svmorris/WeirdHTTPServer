@@ -1,6 +1,7 @@
 const net = require('net');
 const functions = require('./functions');
 const {HOST, PORT} = require('./config');
+
 process.stdout.write(`Starting server on ${HOST}::${PORT}... `)
 
 // Server definition
