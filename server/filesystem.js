@@ -51,6 +51,7 @@ const get_mime_type = (path) => {
         '.css': { literal: 'text/css', disposition: 'inline', binary: false },
         '.png': { literal: 'image/png', disposition: 'inline', binary: true },
         '.jpg': { literal: 'image/jpeg', disposition: 'inline', binary: true },
+        '.ico': { literal: 'image/x-icon', disposition: 'inline', binary: true },
         '.jpeg': { literal: 'image/jpeg', disposition: 'inline', binary: true },
         '.gif': { literal: 'image/gif', disposition: 'inline', binary: true },
         '.svg': { literal: 'image/svg+xml', disposition: 'inline', binary: false },
@@ -86,10 +87,22 @@ const unsafe_sync_read = (path) => {
     }
     return file_data;
 }
+const unsafe_async_read = (path) => {
+    return new Promise((resolve, reject) => {
+      fs.readFile(path, 'utf8', (err, data) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(data);
+        }
+      });
+    });
+  }
 
 
 module.exports = {
     sanitize_path,
     get_mime_type,
-    unsafe_sync_read
+    unsafe_sync_read,
+    unsafe_async_read
 }

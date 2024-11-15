@@ -9,12 +9,15 @@ const socket_server = net.createServer((socket) => {
     console.log(`Connection recieved: ${socket.remoteAddress}::${socket.remotePort}`)
 
     let response = null;
-    socket.on('data', (data) => {
-        // Process request
-        response = functions.request_distributor(data);
-
-        // Send response
-        socket.write(response);
+    socket.on('data', async (data) => {
+        try {
+            // Process request
+            response = await functions.request_distributor(data);
+            // Send response
+            socket.write(response);
+        } catch (err) {
+            console.error(`Error processing request: ${err}`);
+        }
     });
 
     // Handle client disconnecting

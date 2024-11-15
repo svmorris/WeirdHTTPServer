@@ -2,10 +2,10 @@ const filesystem = require('./filesystem');
 const parser = require('./parser');
 const {SERVER_NAME} = require('./config');
 
-const process_get_request = (header_data) => {
+const process_get_request = async (header_data) => {
     const path = filesystem.sanitize_path(header_data['request']['path']);
     
-    const file_data = filesystem.unsafe_sync_read(path);
+    const file_data = await filesystem.unsafe_async_read(path);
 
     // Construct return header
     const return_header_data = {};
@@ -32,7 +32,7 @@ const process_get_request = (header_data) => {
 };
 
 
-const request_distributor = (data) => {
+const request_distributor = async (data) => {
     const lb = '\r\n'; // Line break
     
     // Separate http header from body
@@ -50,7 +50,7 @@ const request_distributor = (data) => {
     // Dispach requests
     switch (header_data['request']['method']) {
         case 'GET':
-            return process_get_request(header_data)
+            return await process_get_request(header_data)
         case 'POST':
             console.log(`POST request is unsupported`);
             break;
