@@ -18,7 +18,7 @@ import importlib
 # NOTE: The current config file is in javascript,
 # we will need to make a config file both can use
 # and transfer this config to that page.
-static_dir = "./pages"
+allowed_directory = "./pages"
 
 
 # ONLY methods within this are accepted!!!
@@ -83,9 +83,9 @@ def run_user_function(module_path, function_name, *args, **kwargs):
 
 
 
-def main(TYPE: str, PATH: str, HEADER_PORT: int, BODY_PORT: int, static_dir: str):
+def main(TYPE: str, PATH: str, HEADER_PORT: int, BODY_PORT: int, allowed_directory: str):
 
-    absolute_module_path = os.path.abspath(os.path.join(static_dir, PATH))
+    absolute_module_path = os.path.abspath(os.path.join(allowed_directory, PATH))
     if not absolute_module_path.startswith(allowed_directory):
         raise ValueError("Module path is not within the allowed directory.")
 
@@ -106,7 +106,7 @@ def main(TYPE: str, PATH: str, HEADER_PORT: int, BODY_PORT: int, static_dir: str
 
 
 
-    elif TYPE in methods_w_body
+    elif TYPE in methods_w_body:
 
         # The server will send the data as two separate connections for better reliability.
         # This will avoid having to re-process the http request in python as well as it has
@@ -150,4 +150,4 @@ def main(TYPE: str, PATH: str, HEADER_PORT: int, BODY_PORT: int, static_dir: str
 
 
 if __name__ == "__main__":
-    main(TYPE, PATH, HEADER_PORT, BODY_PORT)
+    main(TYPE, PATH, HEADER_PORT, BODY_PORT, allowed_directory)

@@ -1,11 +1,23 @@
-const filesystem = require('./filesystem');
 const parser = require('./parser');
+const runner = require('./runner');
+const filesystem = require('./filesystem');
 const {SERVER_NAME} = require('./config');
 
 const process_get_request = async (header_data) => {
     const path = filesystem.sanitize_path(header_data['request']['path']);
     
-    const file_data = await filesystem.unsafe_async_read(path);
+
+    let file_data = "";
+
+    // If path ends with .py, then we run it and
+    // return stdout instead of the file
+    if (path.match(/\.py$/g)) {
+        file_data = await runner.run_script(path, header_data, ''); 
+        console.log("file data: ", file_data);
+    }
+    else {
+        file_data = await filesystem.unsafe_async_read(path);
+    }
 
     // Construct return header
     const return_header_data = {};

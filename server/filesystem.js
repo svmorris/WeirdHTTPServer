@@ -19,16 +19,37 @@ const sanitize_path = (requested_path) => {
         path = path.replace(/\/\.\.\//g, '/');
     }
 
-    // Replace lone trailing slash or empty with index.html
+
+    // The following two statements attempt to complete an
+    // incomplete path with index.py or index.html as well as
+    // replacing file extensions for html and py.
+    // NOTE: .py takes priority in both cases
+
+    // If ends with lone trailing slash
     if (path.match(/\/$/g) || path == '') {
-        path = 'index.html';
+        // check if adding index.py resolves in a real file
+        if (fs.existsSync(BASE_DIR + path + 'inxex.py')) {
+            path += 'index.py';
+        }
+        // check if adding index.html resolves in a real file
+        else if (fs.existsSync(BASE_DIR + path + 'index.html')) {
+            path += 'index.html';
+        }
+        
     }
 
-    // If no file extension is present, add .html
-    if (!path.match(/\.\w+$/g)) {
-        path += '.html';
+    // If there is no file extension
+    else if (!path.match(/\.\w+$/g)) {
+        // check if adding .py resolves in a real file
+        if (fs.existsSync(BASE_DIR + path + '.py')) {
+            path += '.py';
+        }
+        // check if adding .html resolves in a real file
+        else if (fs.existsSync(BASE_DIR + path + '.html')) {
+            path += '.html';
+        }
     }
-        
+
     // Add base directory
     path = BASE_DIR + path;
 
