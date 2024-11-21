@@ -8,7 +8,6 @@ const run_script = async (script_path, headers, body) => {
     const init_arguments = ["./bootstrap.py", script_path];
     
 
-    console.log("got here");
     return new Promise((resolve, reject) => {
 
         // IMPORTANT: changing this to true will allow shell injection

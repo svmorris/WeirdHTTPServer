@@ -8,39 +8,57 @@ const process_get_request = async (header_data) => {
     
 
     let file_data = "";
+    let return_headers = {};
+    let formatted_header = "";
 
     // If path ends with .py, then we run it and
     // return stdout instead of the file
     if (path.match(/\.py$/g)) {
         file_data = await runner.run_script(path, header_data, ''); 
+        try {
+            
+            // Remove trailing newline then parse the last
+            // real line as json
+            return_headers = JSON.parse(file_data.trim().split('\n').pop());
+            file_data = file_data.trim().split('\n').slice(0, -1).join('\n');
+        }
+        catch (err) {
+            console.log(`Error parsing headers returned from script: ${err}`);
+        }
         console.log("file data: ", file_data);
+        return_headers['fields']['Content-Length'] = file_data.length;
+        console.log("return headers: ", return_headers);
+        formatted_header = parser.format_headers(return_headers);
     }
+    // Just read and return a file
     else {
+        
         file_data = await filesystem.unsafe_async_read(path);
-    }
+        // Construct return header
+        return_headers['request'] = {
+            version: header_data['request']['version'],
+            status: 200,
+            message: 'OK'
+        } 
+        
+        mime_data = filesystem.get_mime_type(path);
+        mime_literal = mime_data['literal'];
+        mime_disposition = mime_data['disposition'];
+        return_headers['fields'] = {
+            server: SERVER_NAME,
+            date: new Date().toUTCString(),
+            'Content-Type': mime_literal,
+            'Content-Length': file_data.length,
+            'Content-Cisposition': `${mime_disposition}; filename="${path.split('/').pop()}"`,
+        }
+        
+        formatted_header = parser.format_headers(return_headers);
 
-    // Construct return header
-    const return_header_data = {};
-    return_header_data['request'] = {
-        version: header_data['request']['version'],
-        status: 200,
-        message: 'OK'
-    } 
-    
-    mime_data = filesystem.get_mime_type(path);
-    mime_literal = mime_data['literal'];
-    mime_disposition = mime_data['disposition'];
-    return_header_data['fields'] = {
-        server: SERVER_NAME,
-        date: new Date().toUTCString(),
-        'Content-Type': mime_literal,
-        'Content-Length': file_data.length,
-        'Content-Cisposition': `${mime_disposition}; filename="${path.split('/').pop()}"`,
-    }
-    
-    const formatted_header = parser.format_headers(return_header_data);
+        }
 
+    console.log(`Returning ${file_data.length} bytes`);
     return formatted_header + '\r\n' + file_data;
+
 };
 
 

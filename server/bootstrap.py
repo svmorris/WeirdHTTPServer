@@ -15,7 +15,7 @@ import importlib
 # NOTE: The current config file is in javascript,
 # we will need to make a config file both can use
 # and transfer this config to that page.
-allowed_directory = os.path.abspath("./pages")
+allowed_directory = os.path.abspath("./")
 
 
 # ONLY methods within this are accepted!!!
@@ -34,7 +34,7 @@ methods_w_body = ["POST", "PUT", "PATCH"]
 PATH = sys.argv[1]# Path needs to be sanitized
 
 
-def run_user_function(module_path, function_name, *args, **kwargs):
+def run_user_function(module_path, request, *args, **kwargs):
     """
     Dynamically imports a module and executes a specified function.
 
@@ -48,42 +48,59 @@ def run_user_function(module_path, function_name, *args, **kwargs):
         The return value of the executed function.
     """
 
-    try:
+    #try:
+    if True:
         # Import the module
-        module = importlib.import_module(module_path)
+        spec = importlib.util.spec_from_file_location("test", module_path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
 
         # Get the function object
-        func = getattr(module, function_name)
+        func = getattr(module, method_typedef[request.headers['request']['method']])
 
         # Execute the function
-        result = func(*args, **kwargs)
+        result = func(request)
         return result
 
-    except ImportError as e:
-        print(f"Error importing module: {e}")
-    except AttributeError as e:
-        print(f"Error accessing function: {e}")
-    except Exception as e:
-        print(f"Error executing function: {e}")
+
+    #except ImportError as e:
+    #    print(f"Error importing module: {e}")
+    #except AttributeError as e:
+    #    print(f"Error accessing function: {e}")
+    #except Exception as e:
+    #    print(f"Error executing function: {e}")
 
 
 
+
+class Response:
+    def __init__(self):
+        self.headers = {
+            "request": {
+                "version": "HTTP/1.1",
+                "status": 200,
+                "message": "OK"
+            },
+            "fields": {
+                "Server": "bread.py",
+            }
+        }
 class Request:
     def __init__(self, headers: dict, body, body_is_text: bool):
         self.headers = headers
         self.body = body
         self.body_is_text = body_is_text
+        self.response = Response()
 
 def main(PATH: str,allowed_directory: str):
 
-    absolute_module_path = os.path.abspath(os.path.join(allowed_directory, PATH))
-    print(absolute_module_path)
+    # Get absolute path of PATH variable
+    absolute_module_path = os.path.abspath(PATH)
     if not absolute_module_path.startswith(allowed_directory):
         raise ValueError("Module path is not within the allowed directory.")
 
 
     header_data = sys.stdin.readline()
-
     # clean up and parse the header data
     header_data = header_data.replace("\r\n", "")
     header_data = header_data.strip(" ")
@@ -115,9 +132,12 @@ def main(PATH: str,allowed_directory: str):
     else:
         print("Invalid method")
         sys.exit(1)
+        
+        
+    print("\n"+json.dumps(request.response.headers))
+        
 
-
-
+    
 
 
         
