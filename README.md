@@ -6,15 +6,12 @@ The goal of this project is to create a developer profile website, but do it ent
 What this project has:
 - Webserver written in node, using only the socket API
 - Custom backend scripting system
-| I've implemented a backend scripting system using individual python scripts
-| similarly to how PHP functions. I know its an odd system, but it was interesting
-| to implement
+  > I've implemented the backend scripting system using individual python scripts similarly to how PHP functions. I know its an odd system, but it was interesting to implement
 
 Planned features:
 - Basic Error management
 - Example website
-| Creating an example website will help iron out bugs
-| and complete the erro management system
+  > Creating an example website will help iron out bugs and complete the erro management system
 - Documentation
 
 # Why?
