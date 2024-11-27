@@ -1,6 +1,7 @@
 const net = require('net');
 const functions = require('./functions');
 const {HOST, PORT} = require('./config');
+const {ErrorHandler} = require('./errorhandler');
 
 process.stdout.write(`Starting server on ${HOST}::${PORT}... `)
 
@@ -16,7 +17,16 @@ const socket_server = net.createServer((socket) => {
             // Send response
             socket.write(response);
         } catch (err) {
-            console.error(`Error processing request: ${err}`);
+            try {
+                const handler = new ErrorHandler(err);
+                // Send error response
+                message = handler.getHTTPResponse();
+                console.log("message: ", message);
+                socket.write(message);
+            }
+            catch (err) {
+                console.error(`Socket connection broken or error in error handler: ${err}`);
+            }
         }
     });
 

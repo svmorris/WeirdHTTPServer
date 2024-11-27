@@ -24,6 +24,7 @@ const process_get_request = async (header_data) => {
         }
         catch (err) {
             console.log(`Error parsing headers returned from script: ${err}`);
+            throw err;
         }
         console.log("file data: ", file_data);
         return_headers['fields']['Content-Length'] = file_data.length;
