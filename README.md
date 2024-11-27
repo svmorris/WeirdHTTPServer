@@ -10,8 +10,10 @@ What this project has:
 | similarly to how PHP functions. I know its an odd system, but it was interesting
 | to implement
 
-Planned features:
+Working on:
 - Basic Error management
+
+Planned features:
 - Example website
 | Creating an example website will help iron out bugs
 | and complete the erro management system
