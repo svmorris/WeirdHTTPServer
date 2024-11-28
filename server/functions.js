@@ -5,7 +5,13 @@ const {SERVER_NAME} = require('./config');
 
 const process_get_request = async (header_data) => {
     const path = filesystem.sanitize_path(header_data['request']['path']);
-    
+    if (!filesystem.file_exists(path))
+    {
+        err = new Error(`File not found: ${path}`);
+        err.code = 404;
+        throw err;
+    }
+
 
     let file_data = "";
     let return_headers = {};

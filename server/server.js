@@ -18,6 +18,7 @@ const socket_server = net.createServer((socket) => {
             socket.write(response);
         } catch (err) {
             try {
+                console.log(`[SERVER] Error: ${err}`);
                 const handler = new ErrorHandler(err);
                 // Send error response
                 message = handler.getHTTPResponse();

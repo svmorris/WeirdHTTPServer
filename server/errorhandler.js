@@ -7,6 +7,8 @@ class ErrorHandler {
             this.code = err.code;
         } else {
             // Default to 501 if err.code is undefined or null
+            // Im using 501 as the default as it's likely not used anywhere else,
+            // but will have the same effect
             this.code = 501;
         } 
         console.log("code: ", this.code);

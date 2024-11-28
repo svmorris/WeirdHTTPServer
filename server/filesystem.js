@@ -131,10 +131,18 @@ const unsafe_async_read = (path) => {
     });
   }
 
+// Check if a file exists
+const file_exists = (path) => {
+    if (fs.existsSync(path)) {
+        return true;
+    }
+    return false;
+}
 
 module.exports = {
     sanitize_path,
     get_mime_type,
     unsafe_sync_read,
-    unsafe_async_read
+    unsafe_async_read,
+    file_exists
 }
