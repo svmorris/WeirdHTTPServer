@@ -24,6 +24,8 @@ const process_get_request = async (header_data) => {
         }
         catch (err) {
             console.log(`Error parsing headers returned from script: ${err}`);
+            err.unsafeMessage = "Communication error between server and backend script";
+            err.code = 500;
             throw err;
         }
         console.log("file data: ", file_data);
@@ -31,6 +33,7 @@ const process_get_request = async (header_data) => {
         console.log("return headers: ", return_headers);
         formatted_header = parser.format_headers(return_headers);
     }
+
     // Just read and return a file
     else {
         

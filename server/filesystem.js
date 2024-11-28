@@ -91,6 +91,14 @@ const get_mime_type = (path) => {
         '.txt': { literal: 'text/plain', disposition: 'attachment', binary: false }
     };    
     const ext = path.match(/\.\w+$/g)[0];
+
+    if (!ext || !mimeTypes[ext]) {
+        let err = new Error(`Unsupported MIME type for file: '${ext || 'unknown'}'`);
+        err.unsafeMessage = `Requested file has unknown or unsupported mime type. For security reasons, it will not be served.`;
+        err.code = 500;
+        throw err;
+    }
+
     return mimeTypes[ext];
 };
 
@@ -102,12 +110,15 @@ const unsafe_sync_read = (path) => {
     try {
         file_data = fs.readFileSync(path);
         
-    } catch (error) {
-        // TODO: Error handler
-        console.error(`Error: ${error}`);
+    } catch (err) {
+        err.message = `Error reading file: ${err.message}`;
+        err.unsafeMessage = "An error occurred while reading the requested file.";
+        err.code = 500;
+        throw err;
     }
     return file_data;
 }
+
 const unsafe_async_read = (path) => {
     return new Promise((resolve, reject) => {
       fs.readFile(path, 'utf8', (err, data) => {
