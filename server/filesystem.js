@@ -92,10 +92,11 @@ const get_mime_type = (path) => {
     };    
     const ext = path.match(/\.\w+$/g)[0];
 
+    // Its possible we should just return a default file instead of throwing an error,
+    // but for now ill just be on the safe side.
     if (!ext || !mimeTypes[ext]) {
         let err = new Error(`Unsupported MIME type for file: '${ext || 'unknown'}'`);
-        err.unsafeMessage = `Requested file has unknown or unsupported mime type. For security reasons, it will not be served.`;
-        err.code = 500;
+        err.code = 415;
         throw err;
     }
 

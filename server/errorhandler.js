@@ -30,6 +30,8 @@ class ErrorHandler {
                 return this.error404();
             case 405:
                 return this.error405();
+            case 415:
+                return this.error415();
             case 418:
                 return this.error418();
             case 500:
@@ -165,6 +167,24 @@ class ErrorHandler {
             </body>`;
         
         let headers = `HTTP/1.1 405 Method Not Allowed\r\n`;
+        headers += "Content-Type: text/html\r\n";
+        headers += `Content-Length: ${body.length}\r\n`;
+        headers += "Connection: close\r\n";
+
+        return headers + "\r\n" + body;
+    }
+    
+    error415() {
+        let body = `<html>
+            <head>
+                <title>415 Unsupported Media Type</title>
+            </head>
+            <body>
+                <h1>Unsupported Media Type</h1>
+                <p>The server is refusing to service the request because the entity of the request is in a format not supported by the server for the requested method. </p>
+            </body>`;
+        
+        let headers = `HTTP/1.1 415 Unsupported Media Type\r\n`;
         headers += "Content-Type: text/html\r\n";
         headers += `Content-Length: ${body.length}\r\n`;
         headers += "Connection: close\r\n";
