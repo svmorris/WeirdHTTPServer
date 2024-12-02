@@ -92,7 +92,3 @@ Planned features:
 # Why?
 
 I like building weird projects, and I enjoy proving to myself that programs, where the common consensus is "Do not build yourself but use a library," can still be built by regular people—albeit with much more limited features. For this reason, I am also considering attempting a custom SSL implementation for my server in the future. 
-
---- 
-
-Let me know if you need further refinements!
